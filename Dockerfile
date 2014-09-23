@@ -1,14 +1,11 @@
-FROM busybox
+FROM google/python
 
 MAINTAINER Justin Slattery <justin.slattery@mlssoccer.com>
 
-RUN mkdir -p /etc/ssl/certs
-ADD ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+WORKDIR /app
+RUN virtualenv /env
+RUN /env/bin/pip install boto
+ADD ./security-group-presence.py /app/security-group-presence.py
 
-RUN mkdir -p /etc/boto
-ADD endpoints.json /etc/boto/endpoints.json
-ADD boto.cfg /etc/boto.cfg
-
-ADD ./security-group-presence /bin/security-group-presence
-
-ENTRYPOINT ["/bin/security-group-presence"]
+CMD []
+ENTRYPOINT ["/env/bin/python", "/app/security-group-presence.py"]
